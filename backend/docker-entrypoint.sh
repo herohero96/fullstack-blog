@@ -16,7 +16,7 @@ until nc -z "${DB_HOST}" "${DB_PORT:-3306}" 2>/dev/null; do
 done
 
 echo "MySQL is up. Syncing database schema..."
-npx prisma db push --skip-generate
+npx prisma db push
 
 echo "Starting application..."
 exec "$@"
