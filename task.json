@@ -374,7 +374,7 @@
         "实现审核通过/拒绝/删除用户操作（复用 ConfirmModal）",
         "App.tsx 新增 /admin/users 路由，用 ProtectedRoute requireAdmin 包裹"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [24]
     },
     {
