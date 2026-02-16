@@ -362,7 +362,7 @@
         "App.tsx 用 AuthProvider 包裹应用",
         "/create 和 /edit/:slug 用 ProtectedRoute requireApproved 包裹"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [23]
     },
     {
