@@ -12,6 +12,7 @@ const categoryRoutes_1 = __importDefault(require("./routes/categoryRoutes"));
 const tagRoutes_1 = __importDefault(require("./routes/tagRoutes"));
 const articleRoutes_1 = __importDefault(require("./routes/articleRoutes"));
 const searchRoutes_1 = __importDefault(require("./routes/searchRoutes"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
@@ -19,7 +20,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use((0, cors_1.default)({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 }));
 app.use(express_1.default.json({ limit: '1mb' }));
 // Rate limiting
@@ -35,6 +36,7 @@ app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
 });
 // Routes
+app.use('/api/auth', authRoutes_1.default);
 app.use('/api/categories', categoryRoutes_1.default);
 app.use('/api/tags', tagRoutes_1.default);
 app.use('/api/articles', articleRoutes_1.default);

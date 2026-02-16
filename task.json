@@ -293,7 +293,7 @@
         "在 index.ts 注册 authRoutes，CORS methods 添加 PATCH",
         "用 curl 测试注册、登录、获取当前用户"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [18]
     },
     {
