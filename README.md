@@ -172,7 +172,44 @@ pm2 restart blog-api
 
 ## 数据库迁移：本地 → 服务器
 
-### 方式一：mysqldump 导出导入（推荐）
+### 方式一：SSH 管道一键同步（最推荐）
+
+本地导出直接通过 SSH 管道导入服务器，不产生中间文件，一行搞定：
+
+```bash
+# 完整同步（结构 + 数据，会覆盖服务器数据）
+mysqldump -u root -phero1234 fullstack_blog | ssh user@your-server "mysql -u root -p服务器密码 fullstack_blog"
+
+# 只同步数据（表结构已通过 prisma db push 同步）
+mysqldump -u root -phero1234 --no-create-info fullstack_blog | ssh user@your-server "mysql -u root -p服务器密码 fullstack_blog"
+
+# 只同步指定表的数据
+mysqldump -u root -phero1234 --no-create-info fullstack_blog article category tag articletag | ssh user@your-server "mysql -u root -p服务器密码 fullstack_blog"
+```
+
+可以封装成脚本 `sync-db.sh`，以后一键执行：
+
+```bash
+#!/bin/bash
+# sync-db.sh - 一键同步本地数据库到服务器
+
+SERVER="user@your-server"
+LOCAL_DB_PASS="hero1234"
+REMOTE_DB_PASS="服务器数据库密码"
+DB_NAME="fullstack_blog"
+
+echo "正在同步数据库到服务器..."
+mysqldump -u root -p${LOCAL_DB_PASS} ${DB_NAME} \
+  | ssh ${SERVER} "mysql -u root -p${REMOTE_DB_PASS} ${DB_NAME}"
+echo "同步完成"
+```
+
+```bash
+chmod +x sync-db.sh
+./sync-db.sh
+```
+
+### 方式二：mysqldump 导出导入
 
 #### 本地导出
 
