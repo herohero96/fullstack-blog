@@ -8,6 +8,7 @@ import tagRoutes from './routes/tagRoutes';
 import articleRoutes from './routes/articleRoutes';
 import searchRoutes from './routes/searchRoutes';
 import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.get('/api/health', (_req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/articles', articleRoutes);

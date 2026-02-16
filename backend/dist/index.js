@@ -13,6 +13,7 @@ const tagRoutes_1 = __importDefault(require("./routes/tagRoutes"));
 const articleRoutes_1 = __importDefault(require("./routes/articleRoutes"));
 const searchRoutes_1 = __importDefault(require("./routes/searchRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
@@ -37,6 +38,7 @@ app.get('/api/health', (_req, res) => {
 });
 // Routes
 app.use('/api/auth', authRoutes_1.default);
+app.use('/api/users', userRoutes_1.default);
 app.use('/api/categories', categoryRoutes_1.default);
 app.use('/api/tags', tagRoutes_1.default);
 app.use('/api/articles', articleRoutes_1.default);

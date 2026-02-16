@@ -4,6 +4,7 @@ import { deleteArticle } from '../../lib/api';
 import { useToast } from '../ui/Toast';
 import { useState } from 'react';
 import ConfirmModal from '../ui/ConfirmModal';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface ArticleCardProps {
   article: Article;
@@ -12,6 +13,7 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ article, onDeleted }: ArticleCardProps) {
   const { showToast } = useToast();
+  const { isApproved } = useAuth();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 

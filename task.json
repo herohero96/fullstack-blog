@@ -307,7 +307,7 @@
         "在 index.ts 注册 userRoutes",
         "用 curl 测试用户管理接口"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [19]
     },
     {

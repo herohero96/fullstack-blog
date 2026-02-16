@@ -6,11 +6,13 @@ import { getArticleBySlug, deleteArticle } from '../lib/api';
 import type { Article } from '../types';
 import { useToast } from '../components/ui/Toast';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { isApproved } = useAuth();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -105,13 +107,17 @@ export default function ArticlePage() {
 
       <div className="mt-8 pt-6 border-t border-gray-200 flex gap-3">
         <Link to="/" className="text-sm text-gray-600 hover:text-gray-900">返回列表</Link>
-        <Link to={`/edit/${article.slug}`} className="text-sm text-blue-600 hover:underline">编辑</Link>
-        <button
-          onClick={() => setShowDeleteConfirm(true)}
-          className="text-sm text-red-600 hover:underline"
-        >
-          删除
-        </button>
+        {isApproved && (
+          <>
+            <Link to={`/edit/${article.slug}`} className="text-sm text-blue-600 hover:underline">编辑</Link>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="text-sm text-red-600 hover:underline"
+            >
+              删除
+            </button>
+          </>
+        )}
       </div>
 
       {showDeleteConfirm && (

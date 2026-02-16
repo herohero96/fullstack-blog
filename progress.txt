@@ -101,12 +101,18 @@
 - .env 新增 JWT_SECRET
 - TypeScript 编译通过
 
-## 待完成：用户认证系统（Task 20-22, 26）
+## 待完成：用户认证系统（Task 21-22, 26）
 
-- Task 20: 用户管理 API（管理员）
 - Task 21: 替换 API Key 为 JWT 认证
 - Task 22: 种子数据：默认管理员账号
 - Task 26: 导航栏与页面权限适配
+
+## Task 20: 用户管理 API（管理员） ✅
+- authSchema.ts 新增 updateUserStatusSchema（approved/rejected）
+- 创建 src/controllers/userController.ts（getUsers、updateUserStatus、deleteUser）
+- 创建 src/routes/userRoutes.ts（GET /、PATCH /:id/status、DELETE /:id，均需 requireAdmin）
+- index.ts 注册 userRoutes
+- TypeScript 编译通过
 
 ## Task 19: 注册与登录 API ✅
 - 创建 src/schemas/authSchema.ts（registerSchema、loginSchema Zod 校验）
