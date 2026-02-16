@@ -1,0 +1,260 @@
+{
+  "project": "Fullstack Blog",
+  "description": "全栈博客系统，React + Node.js + MongoDB，支持文章CRUD、标签分类、Markdown编辑、搜索功能",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "后端项目初始化",
+      "description": "创建 Node.js + Express + TypeScript 后端项目",
+      "steps": [
+        "在 backend/ 目录下 npm init，安装 express, mongoose, cors, dotenv, typescript, ts-node, nodemon",
+        "配置 tsconfig.json（strict mode）",
+        "创建 src/index.ts 入口文件，配置 Express 服务器（端口 5000）",
+        "创建 src/config/db.ts 配置 MongoDB 连接（mongodb://localhost:27017/fullstack-blog）",
+        "创建 .env 文件（PORT, MONGODB_URI）",
+        "package.json 添加 scripts: dev（nodemon）、build、start",
+        "验证 npm run dev 能正常启动并连接 MongoDB"
+      ],
+      "passes": false,
+      "dependsOn": []
+    },
+    {
+      "id": 2,
+      "title": "前端项目初始化",
+      "description": "创建 React + Vite + TypeScript + Tailwind CSS 前端项目",
+      "steps": [
+        "使用 Vite 在 frontend/ 目录创建 React + TypeScript 项目",
+        "安装并配置 Tailwind CSS",
+        "安装 react-router-dom 配置路由",
+        "创建 src/lib/api.ts 封装 axios 请求（baseURL: http://localhost:5000/api）",
+        "创建 src/types/index.ts 定义 Article、Tag、Category 类型",
+        "创建基础页面占位：首页、文章详情页、创建文章页",
+        "配置 vite proxy 代理 /api 到后端",
+        "验证 npm run dev 能正常启动"
+      ],
+      "passes": false,
+      "dependsOn": []
+    },
+    {
+      "id": 3,
+      "title": "数据库模型设计",
+      "description": "创建 Mongoose 模型：Article、Tag、Category",
+      "steps": [
+        "创建 src/models/Article.ts：title, content, summary, slug, tags(ref), category(ref), coverImage, published, viewCount, createdAt, updatedAt",
+        "创建 src/models/Tag.ts：name, slug, color, articleCount",
+        "创建 src/models/Category.ts：name, slug, description, articleCount",
+        "添加索引：Article 的 title 和 content 文本索引（用于搜索），slug 唯一索引",
+        "创建 src/scripts/seed.ts 种子数据脚本，预置几个分类和标签"
+      ],
+      "passes": false,
+      "dependsOn": [1]
+    },
+    {
+      "id": 4,
+      "title": "分类 CRUD API",
+      "description": "实现分类的增删改查接口",
+      "steps": [
+        "创建 src/controllers/categoryController.ts",
+        "创建 src/routes/categoryRoutes.ts",
+        "实现 GET /api/categories 获取所有分类（含文章数量）",
+        "实现 POST /api/categories 创建分类",
+        "实现 PUT /api/categories/:id 更新分类",
+        "实现 DELETE /api/categories/:id 删除分类",
+        "在 index.ts 中注册路由",
+        "用 curl 测试所有接口"
+      ],
+      "passes": false,
+      "dependsOn": [3]
+    },
+    {
+      "id": 5,
+      "title": "标签 CRUD API",
+      "description": "实现标签的增删改查接口",
+      "steps": [
+        "创建 src/controllers/tagController.ts",
+        "创建 src/routes/tagRoutes.ts",
+        "实现 GET /api/tags 获取所有标签（含文章数量）",
+        "实现 POST /api/tags 创建标签",
+        "实现 PUT /api/tags/:id 更新标签",
+        "实现 DELETE /api/tags/:id 删除标签",
+        "在 index.ts 中注册路由",
+        "用 curl 测试所有接口"
+      ],
+      "passes": false,
+      "dependsOn": [3]
+    },
+    {
+      "id": 6,
+      "title": "文章 CRUD API",
+      "description": "实现文章的增删改查接口",
+      "steps": [
+        "创建 src/controllers/articleController.ts",
+        "创建 src/routes/articleRoutes.ts",
+        "实现 GET /api/articles 获取文章列表（分页、populate tags/category）",
+        "实现 GET /api/articles/:slug 获取文章详情",
+        "实现 POST /api/articles 创建文章（自动生成 slug）",
+        "实现 PUT /api/articles/:slug 更新文章",
+        "实现 DELETE /api/articles/:slug 删除文章",
+        "创建/删除文章时更新 Tag 和 Category 的 articleCount",
+        "在 index.ts 中注册路由",
+        "用 curl 测试所有接口"
+      ],
+      "passes": false,
+      "dependsOn": [4, 5]
+    },
+    {
+      "id": 7,
+      "title": "搜索 API",
+      "description": "实现文章全文搜索接口",
+      "steps": [
+        "创建 src/controllers/searchController.ts",
+        "创建 src/routes/searchRoutes.ts",
+        "实现 GET /api/search?q=keyword 全文搜索（使用 MongoDB text index）",
+        "支持按标签筛选：GET /api/search?q=keyword&tag=tagId",
+        "支持按分类筛选：GET /api/search?q=keyword&category=categoryId",
+        "返回结果包含高亮摘要",
+        "在 index.ts 中注册路由",
+        "用 curl 测试搜索功能"
+      ],
+      "passes": false,
+      "dependsOn": [6]
+    },
+    {
+      "id": 8,
+      "title": "前端布局和导航",
+      "description": "创建应用的基础布局组件",
+      "steps": [
+        "创建 src/components/layout/Header.tsx 顶部导航栏（Logo、导航链接、搜索入口）",
+        "创建 src/components/layout/Sidebar.tsx 侧边栏（分类列表、标签云）",
+        "创建 src/components/layout/Footer.tsx 页脚",
+        "创建 src/components/layout/Layout.tsx 整体布局（Header + Sidebar + Content + Footer）",
+        "更新 App.tsx 使用 Layout 包裹路由",
+        "响应式布局：移动端 Sidebar 可折叠"
+      ],
+      "passes": false,
+      "dependsOn": [2]
+    },
+    {
+      "id": 9,
+      "title": "文章列表页",
+      "description": "实现首页文章列表展示",
+      "steps": [
+        "创建 src/components/article/ArticleCard.tsx 文章卡片（标题、摘要、标签、分类、日期）",
+        "创建 src/pages/HomePage.tsx 首页，调用 API 获取文章列表",
+        "实现分页组件 src/components/ui/Pagination.tsx",
+        "文章卡片点击跳转到详情页",
+        "显示文章的标签（彩色标签）和分类",
+        "空状态友好提示"
+      ],
+      "passes": false,
+      "dependsOn": [6, 8]
+    },
+    {
+      "id": 10,
+      "title": "文章详情页",
+      "description": "实现文章详情展示，支持 Markdown 渲染",
+      "steps": [
+        "安装 react-markdown 和 remark-gfm",
+        "创建 src/pages/ArticlePage.tsx 文章详情页",
+        "调用 API 获取文章详情（by slug）",
+        "使用 react-markdown 渲染 Markdown 内容",
+        "显示文章元信息：标题、作者、日期、分类、标签、阅读量",
+        "Markdown 代码块语法高亮（安装 react-syntax-highlighter）",
+        "添加返回列表按钮"
+      ],
+      "passes": false,
+      "dependsOn": [9]
+    },
+    {
+      "id": 11,
+      "title": "Markdown 编辑器",
+      "description": "实现 Markdown 编辑器组件，支持实时预览",
+      "steps": [
+        "创建 src/components/editor/MarkdownEditor.tsx",
+        "左侧编辑区：textarea 输入 Markdown",
+        "右侧预览区：实时渲染 Markdown（使用 react-markdown）",
+        "工具栏：加粗、斜体、标题、链接、图片、代码块、列表等快捷按钮",
+        "支持 Tab 缩进",
+        "编辑器高度自适应"
+      ],
+      "passes": false,
+      "dependsOn": [2]
+    },
+    {
+      "id": 12,
+      "title": "创建/编辑文章页",
+      "description": "实现文章创建和编辑表单页面",
+      "steps": [
+        "创建 src/pages/CreateArticlePage.tsx 创建文章页",
+        "创建 src/pages/EditArticlePage.tsx 编辑文章页（复用表单组件）",
+        "创建 src/components/article/ArticleForm.tsx 文章表单组件",
+        "表单字段：标题、摘要、内容（Markdown 编辑器）、分类选择、标签多选、封面图 URL、是否发布",
+        "调用 API 创建/更新文章",
+        "提交成功后跳转到文章详情页",
+        "表单验证：标题必填、内容必填"
+      ],
+      "passes": false,
+      "dependsOn": [10, 11]
+    },
+    {
+      "id": 13,
+      "title": "前端分类和标签管理",
+      "description": "实现前端分类和标签的展示与筛选",
+      "steps": [
+        "Sidebar 中展示分类列表，点击分类筛选文章",
+        "Sidebar 中展示标签云，点击标签筛选文章",
+        "创建 src/pages/CategoryPage.tsx 分类文章列表页",
+        "创建 src/pages/TagPage.tsx 标签文章列表页",
+        "更新路由：/category/:slug、/tag/:slug",
+        "高亮当前选中的分类/标签"
+      ],
+      "passes": false,
+      "dependsOn": [9]
+    },
+    {
+      "id": 14,
+      "title": "搜索功能前端",
+      "description": "实现前端搜索界面",
+      "steps": [
+        "Header 中添加搜索框",
+        "创建 src/pages/SearchPage.tsx 搜索结果页",
+        "调用搜索 API 展示结果",
+        "搜索结果高亮关键词",
+        "支持按分类/标签进一步筛选搜索结果",
+        "空结果友好提示",
+        "搜索防抖（300ms）"
+      ],
+      "passes": false,
+      "dependsOn": [7, 9]
+    },
+    {
+      "id": 15,
+      "title": "文章删除和状态管理",
+      "description": "实现文章删除功能和前端状态优化",
+      "steps": [
+        "文章详情页添加删除按钮（带确认弹窗）",
+        "文章列表页添加编辑/删除操作按钮",
+        "删除后跳转回列表页",
+        "添加 Toast 通知组件（操作成功/失败提示）",
+        "文章发布/草稿状态切换"
+      ],
+      "passes": false,
+      "dependsOn": [12]
+    },
+    {
+      "id": 16,
+      "title": "UI 美化和最终测试",
+      "description": "完善 UI 细节，进行完整测试",
+      "steps": [
+        "统一配色方案和间距",
+        "添加加载状态（Skeleton/Spinner）",
+        "移动端完整适配测试",
+        "前端 npm run build 构建成功",
+        "后端 npm run build 构建成功",
+        "完整流程测试：创建分类 → 创建标签 → 写文章（Markdown）→ 发布 → 查看 → 搜索 → 编辑 → 删除"
+      ],
+      "passes": false,
+      "dependsOn": [13, 14, 15]
+    }
+  ]
+}
