@@ -14,11 +14,12 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # ============ 配置区 - 根据你的实际情况修改 ============
-SERVER="user@your-server"        # SSH 连接地址
+SERVER="root@120.55.183.31"      # SSH 连接地址（用户名@IP）
+SSH_PORT="22"                     # SSH 端口
 LOCAL_DB_USER="root"
 LOCAL_DB_PASS="hero1234"
 REMOTE_DB_USER="root"
-REMOTE_DB_PASS="服务器数据库密码"   # 改成你服务器的数据库密码
+REMOTE_DB_PASS="hero1234"
 DB_NAME="fullstack_blog"
 # =====================================================
 
@@ -40,8 +41,8 @@ echo -e "${GREEN}✓ 本地数据库连接正常${NC}"
 
 # 检查 SSH 连接
 echo "检查服务器 SSH 连接..."
-if ! ssh -o ConnectTimeout=5 ${SERVER} "echo ok" > /dev/null 2>&1; then
-  echo -e "${RED}SSH 连接失败，请检查 SERVER 配置: ${SERVER}${NC}"
+if ! ssh -p ${SSH_PORT} -o ConnectTimeout=5 ${SERVER} "echo ok" > /dev/null 2>&1; then
+  echo -e "${RED}SSH 连接失败，请检查配置: ${SERVER}:${SSH_PORT}${NC}"
   exit 1
 fi
 echo -e "${GREEN}✓ SSH 连接正常${NC}"
@@ -49,16 +50,16 @@ echo -e "${GREEN}✓ SSH 连接正常${NC}"
 # 先备份服务器数据库
 BACKUP_FILE="backup_$(date +%Y%m%d_%H%M%S).sql"
 echo "备份服务器数据库到 /tmp/${BACKUP_FILE}..."
-ssh ${SERVER} "mysqldump -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME} > /tmp/${BACKUP_FILE} 2>/dev/null" 2>/dev/null
+ssh -p ${SSH_PORT} ${SERVER} "mysqldump -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME} > /tmp/${BACKUP_FILE} 2>/dev/null" 2>/dev/null
 echo -e "${GREEN}✓ 服务器备份完成: /tmp/${BACKUP_FILE}${NC}"
 
 # 确保服务器数据库存在
-ssh ${SERVER} "mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} -e 'CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'" 2>/dev/null
+ssh -p ${SSH_PORT} ${SERVER} "mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} -e 'CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'" 2>/dev/null
 
 # 同步
 echo "正在同步..."
 mysqldump -u ${LOCAL_DB_USER} -p${LOCAL_DB_PASS} ${DATA_ONLY} --complete-insert ${DB_NAME} 2>/dev/null \
-  | ssh ${SERVER} "mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME}" 2>/dev/null
+  | ssh -p ${SSH_PORT} ${SERVER} "mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME}" 2>/dev/null
 
 if [ $? -eq 0 ]; then
   echo ""
@@ -69,6 +70,6 @@ if [ $? -eq 0 ]; then
 else
   echo ""
   echo -e "${RED}同步失败，服务器数据可从备份恢复:${NC}"
-  echo -e "${RED}  ssh ${SERVER} \"mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME} < /tmp/${BACKUP_FILE}\"${NC}"
+  echo -e "${RED}  ssh -p ${SSH_PORT} ${SERVER} \"mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME} < /tmp/${BACKUP_FILE}\"${NC}"
   exit 1
 fi
