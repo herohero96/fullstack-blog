@@ -94,8 +94,19 @@
 - api.ts 请求拦截器从 X-API-Key 切换到 Bearer token
 - 新增 401 响应拦截器自动清除失效 token
 
-## 待完成：用户认证系统（Task 24-26）
+## Task 18: 后端 JWT 认证中间件 ✅
+- 安装 bcryptjs jsonwebtoken 及类型声明
+- 创建 src/middleware/auth.ts：signToken、verifyToken、requireAuth、requireApproved、requireAdmin
+- AuthPayload 接口 + Express Request 扩展
+- .env 新增 JWT_SECRET
+- TypeScript 编译通过
 
+## 待完成：用户认证系统（Task 19-22, 24-26）
+
+- Task 19: 注册与登录 API
+- Task 20: 用户管理 API（管理员）
+- Task 21: 替换 API Key 为 JWT 认证
+- Task 22: 种子数据：默认管理员账号
 - Task 24: 登录与注册页面
 - Task 25: 管理员用户管理页面
 - Task 26: 导航栏与页面权限适配

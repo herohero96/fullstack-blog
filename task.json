@@ -279,7 +279,7 @@
         ".env 新增 JWT_SECRET",
         "验证中间件 TypeScript 编译通过"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [17]
     },
     {
