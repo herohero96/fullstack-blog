@@ -101,10 +101,16 @@
 - .env 新增 JWT_SECRET
 - TypeScript 编译通过
 
-## 待完成：用户认证系统（Task 21-22）
+## 待完成：用户认证系统（Task 22）
 
-- Task 21: 替换 API Key 为 JWT 认证
 - Task 22: 种子数据：默认管理员账号
+
+## Task 21: 替换 API Key 为 JWT 认证 ✅
+- articleRoutes.ts：apiKeyAuth → requireAuth, requireApproved
+- categoryRoutes.ts：同上
+- tagRoutes.ts：同上
+- articleController.ts createArticle 中设置 authorId: req.user!.userId
+- 后端 npm run build 通过
 
 ## Task 20: 用户管理 API（管理员） ✅
 - authSchema.ts 新增 updateUserStatusSchema（approved/rejected）

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { apiKeyAuth } from '../middleware/apiKeyAuth';
+import { requireAuth, requireApproved } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 import { createCategorySchema, updateCategorySchema } from '../schemas/taxonomySchema';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/categoryController';
@@ -7,8 +7,8 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 const router = Router();
 
 router.get('/', getCategories);
-router.post('/', apiKeyAuth, validate(createCategorySchema), createCategory);
-router.put('/:id', apiKeyAuth, validate(updateCategorySchema), updateCategory);
-router.delete('/:id', apiKeyAuth, deleteCategory);
+router.post('/', requireAuth, requireApproved, validate(createCategorySchema), createCategory);
+router.put('/:id', requireAuth, requireApproved, validate(updateCategorySchema), updateCategory);
+router.delete('/:id', requireAuth, requireApproved, deleteCategory);
 
 export default router;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { apiKeyAuth } from '../middleware/apiKeyAuth';
+import { requireAuth, requireApproved } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 import { createTagSchema, updateTagSchema } from '../schemas/taxonomySchema';
 import { getTags, createTag, updateTag, deleteTag } from '../controllers/tagController';
@@ -7,8 +7,8 @@ import { getTags, createTag, updateTag, deleteTag } from '../controllers/tagCont
 const router = Router();
 
 router.get('/', getTags);
-router.post('/', apiKeyAuth, validate(createTagSchema), createTag);
-router.put('/:id', apiKeyAuth, validate(updateTagSchema), updateTag);
-router.delete('/:id', apiKeyAuth, deleteTag);
+router.post('/', requireAuth, requireApproved, validate(createTagSchema), createTag);
+router.put('/:id', requireAuth, requireApproved, validate(updateTagSchema), updateTag);
+router.delete('/:id', requireAuth, requireApproved, deleteTag);
 
 export default router;

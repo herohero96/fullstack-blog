@@ -105,6 +105,7 @@ export const createArticle = async (req: Request, res: Response) => {
           categoryId: validCategoryId,
           coverImage: coverImage || '',
           published: published || false,
+          authorId: req.user!.userId,
           tags: tagIds.length > 0 ? {
             create: tagIds.map((tagId: number) => ({ tagId })),
           } : undefined,
