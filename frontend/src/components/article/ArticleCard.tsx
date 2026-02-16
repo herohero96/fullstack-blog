@@ -76,20 +76,22 @@ export default function ArticleCard({ article, onDeleted }: ArticleCardProps) {
             </Link>
           ))}
         </div>
-        <div className="flex items-center gap-2 shrink-0 ml-3">
-          <Link
-            to={`/edit/${article.slug}`}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors"
-          >
-            编辑
-          </Link>
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="text-xs text-gray-500 hover:text-red-600 transition-colors"
-          >
-            删除
-          </button>
-        </div>
+        {isApproved && (
+          <div className="flex items-center gap-2 shrink-0 ml-3">
+            <Link
+              to={`/edit/${article.slug}`}
+              className="text-xs text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              编辑
+            </Link>
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="text-xs text-gray-500 hover:text-red-600 transition-colors"
+            >
+              删除
+            </button>
+          </div>
+        )}
       </div>
 
       {showDeleteConfirm && (

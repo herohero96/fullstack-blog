@@ -321,7 +321,7 @@
         "articleController.ts 的 createArticle 中设置 authorId: req.user!.userId",
         "验证后端 npm run build 通过"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [19]
     },
     {
@@ -388,7 +388,7 @@
         "ArticlePage.tsx：编辑/删除按钮仅对已审核用户显示",
         "验证前端 npm run build 通过"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [24]
     }
   ]
