@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import bcrypt from 'bcryptjs';
 import prisma from '../config/db';
 
 const categories = [
@@ -26,12 +27,25 @@ const seed = async () => {
     await prisma.article.deleteMany({});
     await prisma.category.deleteMany({});
     await prisma.tag.deleteMany({});
+    await prisma.user.deleteMany({});
 
     await prisma.category.createMany({ data: categories });
     console.log('Categories seeded');
 
     await prisma.tag.createMany({ data: tags });
     console.log('Tags seeded');
+
+    const adminPassword = await bcrypt.hash('admin123', 10);
+    await prisma.user.create({
+      data: {
+        username: 'admin',
+        email: 'admin@blog.com',
+        password: adminPassword,
+        role: 'admin',
+        status: 'approved',
+      },
+    });
+    console.log('Admin user seeded');
 
     console.log('Seed completed successfully');
     process.exit(0);

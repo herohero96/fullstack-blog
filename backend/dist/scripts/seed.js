@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = __importDefault(require("../config/db"));
 const categories = [
     { name: '技术', slug: 'tech', description: '技术相关文章' },
@@ -26,10 +27,22 @@ const seed = async () => {
         await db_1.default.article.deleteMany({});
         await db_1.default.category.deleteMany({});
         await db_1.default.tag.deleteMany({});
+        await db_1.default.user.deleteMany({});
         await db_1.default.category.createMany({ data: categories });
         console.log('Categories seeded');
         await db_1.default.tag.createMany({ data: tags });
         console.log('Tags seeded');
+        const adminPassword = await bcryptjs_1.default.hash('admin123', 10);
+        await db_1.default.user.create({
+            data: {
+                username: 'admin',
+                email: 'admin@blog.com',
+                password: adminPassword,
+                role: 'admin',
+                status: 'approved',
+            },
+        });
+        console.log('Admin user seeded');
         console.log('Seed completed successfully');
         process.exit(0);
     }

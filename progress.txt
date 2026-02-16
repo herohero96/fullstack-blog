@@ -101,9 +101,10 @@
 - .env 新增 JWT_SECRET
 - TypeScript 编译通过
 
-## 待完成：用户认证系统（Task 22）
-
-- Task 22: 种子数据：默认管理员账号
+## Task 22: 种子数据：默认管理员账号 ✅
+- seed.ts 新增 await prisma.user.deleteMany({}) 清理
+- 使用 bcryptjs 哈希密码，创建管理员用户（admin@blog.com / admin123，role=admin, status=approved）
+- 后端 npm run build 通过
 
 ## Task 21: 替换 API Key 为 JWT 认证 ✅
 - articleRoutes.ts：apiKeyAuth → requireAuth, requireApproved

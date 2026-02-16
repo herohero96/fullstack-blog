@@ -333,7 +333,7 @@
         "使用 bcryptjs 哈希密码",
         "运行 npm run seed 验证管理员创建成功"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [17]
     },
     {
