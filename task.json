@@ -15,7 +15,7 @@
         "package.json 添加 scripts: dev（nodemon）、build、start",
         "验证 npm run dev 能正常启动并连接 MongoDB"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": []
     },
     {
@@ -32,7 +32,7 @@
         "配置 vite proxy 代理 /api 到后端",
         "验证 npm run dev 能正常启动"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": []
     },
     {
@@ -46,7 +46,7 @@
         "添加索引：Article 的 title 和 content 文本索引（用于搜索），slug 唯一索引",
         "创建 src/scripts/seed.ts 种子数据脚本，预置几个分类和标签"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [1]
     },
     {
@@ -63,7 +63,7 @@
         "在 index.ts 中注册路由",
         "用 curl 测试所有接口"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [3]
     },
     {
@@ -80,7 +80,7 @@
         "在 index.ts 中注册路由",
         "用 curl 测试所有接口"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [3]
     },
     {
@@ -99,7 +99,7 @@
         "在 index.ts 中注册路由",
         "用 curl 测试所有接口"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [4, 5]
     },
     {
@@ -116,7 +116,7 @@
         "在 index.ts 中注册路由",
         "用 curl 测试搜索功能"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [6]
     },
     {
@@ -131,7 +131,7 @@
         "更新 App.tsx 使用 Layout 包裹路由",
         "响应式布局：移动端 Sidebar 可折叠"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [2]
     },
     {
@@ -146,7 +146,7 @@
         "显示文章的标签（彩色标签）和分类",
         "空状态友好提示"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [6, 8]
     },
     {
@@ -162,7 +162,7 @@
         "Markdown 代码块语法高亮（安装 react-syntax-highlighter）",
         "添加返回列表按钮"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [9]
     },
     {
@@ -177,7 +177,7 @@
         "支持 Tab 缩进",
         "编辑器高度自适应"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [2]
     },
     {
@@ -193,7 +193,7 @@
         "提交成功后跳转到文章详情页",
         "表单验证：标题必填、内容必填"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [10, 11]
     },
     {
@@ -208,7 +208,7 @@
         "更新路由：/category/:slug、/tag/:slug",
         "高亮当前选中的分类/标签"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [9]
     },
     {
@@ -224,7 +224,7 @@
         "空结果友好提示",
         "搜索防抖（300ms）"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [7, 9]
     },
     {
@@ -238,7 +238,7 @@
         "添加 Toast 通知组件（操作成功/失败提示）",
         "文章发布/草稿状态切换"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [12]
     },
     {
@@ -253,8 +253,143 @@
         "后端 npm run build 构建成功",
         "完整流程测试：创建分类 → 创建标签 → 写文章（Markdown）→ 发布 → 查看 → 搜索 → 编辑 → 删除"
       ],
-      "passes": false,
+      "passes": true,
       "dependsOn": [13, 14, 15]
+    },
+    {
+      "id": 17,
+      "title": "用户模型与数据库迁移",
+      "description": "Prisma schema 新增 User 模型，Article 新增 authorId 外键，运行迁移",
+      "steps": [
+        "在 schema.prisma 新增 User 模型（username, email, password, role, status, createdAt, updatedAt）",
+        "Article 模型新增 authorId 可空外键关联 User",
+        "运行 npx prisma migrate dev --name add-user-model",
+        "验证迁移成功，数据库表已创建"
+      ],
+      "passes": true,
+      "dependsOn": [3]
+    },
+    {
+      "id": 18,
+      "title": "后端 JWT 认证中间件",
+      "description": "创建 JWT 认证相关中间件和工具函数",
+      "steps": [
+        "安装 bcryptjs jsonwebtoken 及其类型声明",
+        "创建 src/middleware/auth.ts：signToken、verifyToken、requireAuth、requireApproved、requireAdmin",
+        ".env 新增 JWT_SECRET",
+        "验证中间件 TypeScript 编译通过"
+      ],
+      "passes": false,
+      "dependsOn": [17]
+    },
+    {
+      "id": 19,
+      "title": "注册与登录 API",
+      "description": "实现用户注册、登录、获取当前用户接口",
+      "steps": [
+        "创建 src/schemas/authSchema.ts（Zod 校验：registerSchema、loginSchema）",
+        "创建 src/controllers/authController.ts（register、login、getMe）",
+        "创建 src/routes/authRoutes.ts（POST /api/auth/register、POST /api/auth/login、GET /api/auth/me）",
+        "在 index.ts 注册 authRoutes，CORS methods 添加 PATCH",
+        "用 curl 测试注册、登录、获取当前用户"
+      ],
+      "passes": false,
+      "dependsOn": [18]
+    },
+    {
+      "id": 20,
+      "title": "用户管理 API（管理员）",
+      "description": "实现管理员用户管理接口：列表、审核、删除",
+      "steps": [
+        "创建 src/schemas/authSchema.ts 新增 updateUserStatusSchema",
+        "创建 src/controllers/userController.ts（getUsers、updateUserStatus、deleteUser）",
+        "创建 src/routes/userRoutes.ts（GET /api/users、PATCH /api/users/:id/status、DELETE /api/users/:id，均需 requireAdmin）",
+        "在 index.ts 注册 userRoutes",
+        "用 curl 测试用户管理接口"
+      ],
+      "passes": false,
+      "dependsOn": [19]
+    },
+    {
+      "id": 21,
+      "title": "替换 API Key 为 JWT 认证",
+      "description": "将现有路由的 apiKeyAuth 中间件替换为 JWT 中间件",
+      "steps": [
+        "articleRoutes.ts：apiKeyAuth → requireAuth, requireApproved",
+        "categoryRoutes.ts：同上",
+        "tagRoutes.ts：同上",
+        "articleController.ts 的 createArticle 中设置 authorId: req.user!.userId",
+        "验证后端 npm run build 通过"
+      ],
+      "passes": false,
+      "dependsOn": [19]
+    },
+    {
+      "id": 22,
+      "title": "种子数据：默认管理员账号",
+      "description": "更新 seed 脚本，新增默认管理员用户",
+      "steps": [
+        "seed.ts 中新增创建管理员用户（admin@blog.com / admin123，role=admin, status=approved）",
+        "使用 bcryptjs 哈希密码",
+        "运行 npm run seed 验证管理员创建成功"
+      ],
+      "passes": false,
+      "dependsOn": [17]
+    },
+    {
+      "id": 23,
+      "title": "前端 AuthContext 与 API 改造",
+      "description": "创建认证上下文，改造 API 拦截器从 API Key 切换到 JWT",
+      "steps": [
+        "types/index.ts 新增 User、UserRole、UserStatus、AuthResponse 类型",
+        "创建 src/contexts/AuthContext.tsx（AuthProvider + useAuth hook）",
+        "api.ts 请求拦截器：X-API-Key → Bearer token；新增 401 响应拦截器",
+        "api.ts 新增 auth/user 相关 API 函数",
+        "验证前端 TypeScript 编译通过"
+      ],
+      "passes": true,
+      "dependsOn": [21]
+    },
+    {
+      "id": 24,
+      "title": "登录与注册页面",
+      "description": "创建前端登录页和注册页",
+      "steps": [
+        "创建 src/pages/LoginPage.tsx（邮箱+密码表单，登录成功跳转首页）",
+        "创建 src/pages/RegisterPage.tsx（用户名+邮箱+密码表单，注册后提示等待审核）",
+        "创建 src/components/auth/ProtectedRoute.tsx 路由守卫组件",
+        "App.tsx 新增 /login、/register 路由",
+        "App.tsx 用 AuthProvider 包裹应用",
+        "/create 和 /edit/:slug 用 ProtectedRoute requireApproved 包裹"
+      ],
+      "passes": false,
+      "dependsOn": [23]
+    },
+    {
+      "id": 25,
+      "title": "管理员用户管理页面",
+      "description": "创建管理员审核用户的前端页面",
+      "steps": [
+        "创建 src/pages/AdminUsersPage.tsx（用户列表表格，支持按状态筛选）",
+        "实现审核通过/拒绝/删除用户操作（复用 ConfirmModal）",
+        "App.tsx 新增 /admin/users 路由，用 ProtectedRoute requireAdmin 包裹"
+      ],
+      "passes": false,
+      "dependsOn": [24]
+    },
+    {
+      "id": 26,
+      "title": "导航栏与页面权限适配",
+      "description": "Header 根据登录状态显示不同导航，文章页条件显示编辑/删除",
+      "steps": [
+        "Header.tsx：未登录显示'登录'链接；已登录显示用户名+状态徽章+退出按钮",
+        "Header.tsx：已审核用户显示'写文章'；管理员额外显示'用户管理'",
+        "Header.tsx：移动端菜单同步适配",
+        "ArticlePage.tsx：编辑/删除按钮仅对已审核用户显示",
+        "验证前端 npm run build 通过"
+      ],
+      "passes": false,
+      "dependsOn": [24]
     }
   ]
 }

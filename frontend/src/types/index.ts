@@ -37,3 +37,20 @@ export interface PaginatedResponse<T> {
   page: number;
   totalPages: number;
 }
+
+export type UserRole = 'admin' | 'user';
+export type UserStatus = 'pending' | 'approved' | 'rejected';
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+  createdAt?: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}

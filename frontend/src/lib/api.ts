@@ -5,14 +5,23 @@ const api = axios.create({
   baseURL: '/api',
 });
 
-// Add API key to mutating requests
 api.interceptors.request.use((config) => {
-  const apiKey = import.meta.env.VITE_API_KEY;
-  if (apiKey && config.method && ['post', 'put', 'delete'].includes(config.method)) {
-    config.headers['X-API-Key'] = apiKey;
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Articles
 export const getArticles = (params?: { page?: number; limit?: number; category?: string; tag?: string }) =>
