@@ -2,6 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+
+// Load environment variables first
+dotenv.config();
+
+// Then import modules that require environment variables
 import prisma from './config/db';
 import categoryRoutes from './routes/categoryRoutes';
 import tagRoutes from './routes/tagRoutes';
@@ -9,8 +14,6 @@ import articleRoutes from './routes/articleRoutes';
 import searchRoutes from './routes/searchRoutes';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
-
-dotenv.config();
 
 const app = express();
 app.set('trust proxy', 1);

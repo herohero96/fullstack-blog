@@ -23,21 +23,32 @@ const seed = async () => {
     await prisma.$connect();
     console.log('Connected to MySQL');
 
-    await prisma.articleTag.deleteMany({});
-    await prisma.article.deleteMany({});
-    await prisma.category.deleteMany({});
-    await prisma.tag.deleteMany({});
-    await prisma.user.deleteMany({});
-
-    await prisma.category.createMany({ data: categories });
+    // Upsert categories (create if not exists, skip if exists)
+    for (const cat of categories) {
+      await prisma.category.upsert({
+        where: { slug: cat.slug },
+        update: {},
+        create: cat,
+      });
+    }
     console.log('Categories seeded');
 
-    await prisma.tag.createMany({ data: tags });
+    // Upsert tags
+    for (const tag of tags) {
+      await prisma.tag.upsert({
+        where: { slug: tag.slug },
+        update: {},
+        create: tag,
+      });
+    }
     console.log('Tags seeded');
 
+    // Upsert admin user
     const adminPassword = await bcrypt.hash('admin123', 10);
-    await prisma.user.create({
-      data: {
+    await prisma.user.upsert({
+      where: { email: 'admin@blog.com' },
+      update: {},
+      create: {
         username: 'admin',
         email: 'admin@blog.com',
         password: adminPassword,
