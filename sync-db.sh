@@ -1,12 +1,14 @@
 #!/bin/bash
 
 # =============================================================================
-# sync-db.sh - 一键同步本地数据库到服务器
+# sync-db.sh - 一键同步本地数据库到服务器（服务器 MySQL 运行在 Docker 中）
 #
 # 用法:
 #   ./sync-db.sh              # 完整同步（结构 + 数据）
 #   ./sync-db.sh --data-only  # 只同步数据（不含建表语句）
 # =============================================================================
+
+set +H  # 禁用 bash 历史扩展，避免密码中的 ! 被解析
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -19,9 +21,12 @@ SSH_PORT="22"                     # SSH 端口
 LOCAL_DB_USER="root"
 LOCAL_DB_PASS="hero1234"
 REMOTE_DB_USER="root"
-REMOTE_DB_PASS="hero1234"
+REMOTE_DB_PASS="Blog2024Secure!"
+REMOTE_CONTAINER="fullstack-blog-mysql-1"  # 服务器上 MySQL Docker 容器名
 DB_NAME="fullstack_blog"
 # =====================================================
+
+SSH_OPTS="-p ${SSH_PORT} -o ConnectTimeout=10 -o StrictHostKeyChecking=no"
 
 DATA_ONLY=""
 if [ "$1" = "--data-only" ]; then
@@ -41,25 +46,33 @@ echo -e "${GREEN}✓ 本地数据库连接正常${NC}"
 
 # 检查 SSH 连接
 echo "检查服务器 SSH 连接..."
-if ! ssh -p ${SSH_PORT} -o ConnectTimeout=5 ${SERVER} "echo ok" > /dev/null 2>&1; then
+if ! ssh ${SSH_OPTS} ${SERVER} "echo ok"; then
   echo -e "${RED}SSH 连接失败，请检查配置: ${SERVER}:${SSH_PORT}${NC}"
   exit 1
 fi
 echo -e "${GREEN}✓ SSH 连接正常${NC}"
 
+# 检查远程 Docker 容器
+echo "检查服务器 MySQL 容器..."
+if ! ssh ${SSH_OPTS} ${SERVER} "docker exec ${REMOTE_CONTAINER} mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} -e 'SELECT 1'" > /dev/null 2>&1; then
+  echo -e "${RED}服务器 MySQL 容器连接失败，请检查容器名和密码${NC}"
+  exit 1
+fi
+echo -e "${GREEN}✓ 服务器 MySQL 容器连接正常${NC}"
+
 # 先备份服务器数据库
 BACKUP_FILE="backup_$(date +%Y%m%d_%H%M%S).sql"
 echo "备份服务器数据库到 /tmp/${BACKUP_FILE}..."
-ssh -p ${SSH_PORT} ${SERVER} "mysqldump -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME} > /tmp/${BACKUP_FILE} 2>/dev/null" 2>/dev/null
+ssh ${SSH_OPTS} ${SERVER} "docker exec ${REMOTE_CONTAINER} mysqldump -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME}" > /tmp/${BACKUP_FILE} 2>/dev/null
 echo -e "${GREEN}✓ 服务器备份完成: /tmp/${BACKUP_FILE}${NC}"
 
 # 确保服务器数据库存在
-ssh -p ${SSH_PORT} ${SERVER} "mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} -e 'CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'" 2>/dev/null
+ssh ${SSH_OPTS} ${SERVER} "docker exec ${REMOTE_CONTAINER} mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} -e 'CREATE DATABASE IF NOT EXISTS ${DB_NAME} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'" 2>/dev/null
 
 # 同步
 echo "正在同步..."
 mysqldump -u ${LOCAL_DB_USER} -p${LOCAL_DB_PASS} ${DATA_ONLY} --complete-insert ${DB_NAME} 2>/dev/null \
-  | ssh -p ${SSH_PORT} ${SERVER} "mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME}" 2>/dev/null
+  | ssh ${SSH_OPTS} ${SERVER} "docker exec -i ${REMOTE_CONTAINER} mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME}" 2>/dev/null
 
 if [ $? -eq 0 ]; then
   echo ""
@@ -70,6 +83,7 @@ if [ $? -eq 0 ]; then
 else
   echo ""
   echo -e "${RED}同步失败，服务器数据可从备份恢复:${NC}"
-  echo -e "${RED}  ssh -p ${SSH_PORT} ${SERVER} \"mysql -u ${REMOTE_DB_USER} -p${REMOTE_DB_PASS} ${DB_NAME} < /tmp/${BACKUP_FILE}\"${NC}"
+  echo -e "${RED}  ssh -p ${SSH_PORT} ${SERVER}${NC}"
+  echo -e "${RED}  然后执行: docker exec -i ${REMOTE_CONTAINER} mysql -u ${REMOTE_DB_USER} -p'密码' ${DB_NAME} < /tmp/${BACKUP_FILE}${NC}"
   exit 1
 fi
