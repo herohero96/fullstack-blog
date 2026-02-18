@@ -26,11 +26,25 @@ export const getArticles = async (req: Request, res: Response) => {
 
     const where: any = {};
     if (req.query.published === 'true') where.published = true;
-    if (req.query.category) where.categoryId = parseInt(req.query.category as string);
+    if (req.query.category) {
+      const catParam = req.query.category as string;
+      const catId = parseInt(catParam);
+      if (!isNaN(catId)) {
+        where.categoryId = catId;
+      } else {
+        const cat = await prisma.category.findFirst({ where: { slug: catParam } });
+        where.categoryId = cat ? cat.id : -1;
+      }
+    }
     if (req.query.tag) {
-      where.tags = {
-        some: { tagId: parseInt(req.query.tag as string) },
-      };
+      const tagParam = req.query.tag as string;
+      const tagId = parseInt(tagParam);
+      if (!isNaN(tagId)) {
+        where.tags = { some: { tagId } };
+      } else {
+        const tag = await prisma.tag.findFirst({ where: { slug: tagParam } });
+        where.tags = { some: { tagId: tag ? tag.id : -1 } };
+      }
     }
 
     const [articles, total] = await Promise.all([

@@ -3,8 +3,10 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { searchArticles } from '../lib/api';
 import type { Article } from '../types';
 import Pagination from '../components/ui/Pagination';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function SearchPage() {
+  useDocumentTitle('搜索结果');
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const [articles, setArticles] = useState<Article[]>([]);

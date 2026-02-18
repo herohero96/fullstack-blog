@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function RegisterPage() {
+  useDocumentTitle('注册');
   const { register } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');

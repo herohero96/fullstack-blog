@@ -3,8 +3,10 @@ import { getArticles } from '../lib/api';
 import type { Article } from '../types';
 import ArticleCard from '../components/article/ArticleCard';
 import Pagination from '../components/ui/Pagination';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function HomePage() {
+  useDocumentTitle();
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

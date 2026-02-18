@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(git *)",
+      "Bash(curl *)",
+      "Bash(mkdir *)",
+      "Bash(ls *)",
+      "Bash(cd *)",
+      "Bash(mysql *)",
+      "Bash(ssh *)",
+      "Bash(cat *)",
+      "Bash(node *)",
+      "Bash(tsc *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ],
+    "deny": []
+  }
+}

@@ -7,6 +7,7 @@ import type { Article } from '../types';
 import { useToast } from '../components/ui/Toast';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import { useAuth } from '../contexts/AuthContext';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,6 +20,8 @@ export default function ArticlePage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  useDocumentTitle(article?.title);
+
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
@@ -27,6 +30,27 @@ export default function ArticlePage() {
       .catch(() => setError('文章未找到。'))
       .finally(() => setLoading(false));
   }, [slug]);
+
+  // Manage OG meta tags
+  useEffect(() => {
+    if (!article) return;
+    const metas: HTMLMetaElement[] = [];
+    const ogTags: Record<string, string> = {
+      'og:title': article.title,
+      'og:description': article.summary || '',
+      'og:type': 'article',
+    };
+    for (const [property, content] of Object.entries(ogTags)) {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', property);
+      meta.setAttribute('content', content);
+      document.head.appendChild(meta);
+      metas.push(meta);
+    }
+    return () => {
+      metas.forEach(m => m.remove());
+    };
+  }, [article]);
 
   const handleDelete = async () => {
     if (!article) return;

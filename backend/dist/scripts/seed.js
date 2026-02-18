@@ -23,18 +23,30 @@ const seed = async () => {
     try {
         await db_1.default.$connect();
         console.log('Connected to MySQL');
-        await db_1.default.articleTag.deleteMany({});
-        await db_1.default.article.deleteMany({});
-        await db_1.default.category.deleteMany({});
-        await db_1.default.tag.deleteMany({});
-        await db_1.default.user.deleteMany({});
-        await db_1.default.category.createMany({ data: categories });
+        // Upsert categories (create if not exists, skip if exists)
+        for (const cat of categories) {
+            await db_1.default.category.upsert({
+                where: { slug: cat.slug },
+                update: {},
+                create: cat,
+            });
+        }
         console.log('Categories seeded');
-        await db_1.default.tag.createMany({ data: tags });
+        // Upsert tags
+        for (const tag of tags) {
+            await db_1.default.tag.upsert({
+                where: { slug: tag.slug },
+                update: {},
+                create: tag,
+            });
+        }
         console.log('Tags seeded');
+        // Upsert admin user
         const adminPassword = await bcryptjs_1.default.hash('admin123', 10);
-        await db_1.default.user.create({
-            data: {
+        await db_1.default.user.upsert({
+            where: { email: 'admin@blog.com' },
+            update: {},
+            create: {
                 username: 'admin',
                 email: 'admin@blog.com',
                 password: adminPassword,

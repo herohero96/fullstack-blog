@@ -4,9 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const dotenv_1 = __importDefault(require("dotenv"));
+// Load environment variables first
+dotenv_1.default.config();
+// Then import modules that require environment variables
 const db_1 = __importDefault(require("./config/db"));
 const categoryRoutes_1 = __importDefault(require("./routes/categoryRoutes"));
 const tagRoutes_1 = __importDefault(require("./routes/tagRoutes"));
@@ -14,11 +18,11 @@ const articleRoutes_1 = __importDefault(require("./routes/articleRoutes"));
 const searchRoutes_1 = __importDefault(require("./routes/searchRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
-dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 // Middleware
+app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -33,8 +37,14 @@ const limiter = (0, express_rate_limit_1.default)({
 });
 app.use('/api', limiter);
 // Health check
-app.get('/api/health', (_req, res) => {
-    res.json({ status: 'ok' });
+app.get('/api/health', async (_req, res) => {
+    try {
+        await db_1.default.$queryRaw `SELECT 1`;
+        res.json({ status: 'ok', database: 'connected' });
+    }
+    catch {
+        res.status(503).json({ status: 'error', database: 'disconnected' });
+    }
 });
 // Routes
 app.use('/api/auth', authRoutes_1.default);

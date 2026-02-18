@@ -146,3 +146,10 @@
 - ArticlePage.tsx：编辑/删除按钮仅对已审核用户显示
 - ArticleCard.tsx：编辑/删除按钮仅对已审核用户显示
 - 前端 npm run build 通过
+
+## Task 27: 撰写博客文章：手机远程连接电脑使用 Claude Code ✅
+- 创建标签：远程开发(id:27)、SSH(id:28)，复用已有 Claude Code(id:14)、开发工具(id:16)
+- 分类：技术教程(id:10)
+- 通过 POST /api/articles 接口创建文章（id:20），已发布
+- 文章内容涵盖：为什么用手机连 Claude Code、所需工具、SSH 连接步骤、tmux 防断线、外网穿透方案、实际使用体验
+- API 验证通过，文章可正常获取

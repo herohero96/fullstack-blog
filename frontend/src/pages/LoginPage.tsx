@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function LoginPage() {
+  useDocumentTitle('登录');
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');

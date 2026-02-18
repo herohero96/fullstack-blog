@@ -2,9 +2,11 @@ import { useParams } from 'react-router-dom';
 import ArticleCard from '../components/article/ArticleCard';
 import Pagination from '../components/ui/Pagination';
 import { useArticleList } from '../hooks/useArticleList';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function TagPage() {
   const { slug } = useParams<{ slug: string }>();
+  useDocumentTitle(`标签: ${slug}`);
   const { articles, page, totalPages, loading, onPageChange, refresh } = useArticleList({ tag: slug });
 
   if (loading) {

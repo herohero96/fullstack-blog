@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
@@ -20,6 +21,7 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(helmet());
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -36,8 +38,13 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Health check
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
+app.get('/api/health', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', database: 'connected' });
+  } catch {
+    res.status(503).json({ status: 'error', database: 'disconnected' });
+  }
 });
 
 // Routes

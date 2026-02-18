@@ -390,6 +390,19 @@
       ],
       "passes": true,
       "dependsOn": [24]
+    },
+    {
+      "id": 27,
+      "title": "撰写博客文章：手机远程连接电脑使用 Claude Code",
+      "description": "通过 API 写入一篇 Markdown 博客文章，内容为手机远程连接电脑使用 Claude Code 的完整教程",
+      "steps": [
+        "撰写 Markdown 文章内容，涵盖：为什么用手机远程连 Claude Code、所需工具（SSH 客户端/Cloud9 等）、具体连接步骤、使用体验与注意事项",
+        "确认数据库中有合适的分类和标签（如'技术教程'分类、'Claude Code'/'远程开发'标签），没有则通过 API 创建",
+        "通过 POST /api/articles 接口将文章插入数据库",
+        "验证文章在前端能正常展示和渲染"
+      ],
+      "passes": true,
+      "dependsOn": [16]
     }
   ]
 }
