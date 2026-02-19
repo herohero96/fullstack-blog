@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Article, Category, Tag, PaginatedResponse } from '../types';
+import type { Article, Category, Tag, PaginatedResponse, Comment } from '../types';
 
 const api = axios.create({
   baseURL: '/api',
@@ -73,3 +73,13 @@ export const searchArticles = (q: string, params?: { page?: number; limit?: numb
   api.get<PaginatedResponse<Article>>('/search', { params: { q, ...params } }).then(res => res.data);
 
 export default api;
+
+// Comments
+export const getComments = (slug: string) =>
+  api.get<Comment[]>(`/articles/${slug}/comments`).then(res => res.data);
+
+export const createComment = (slug: string, data: { content: string; parentId?: number | null }) =>
+  api.post<Comment>(`/articles/${slug}/comments`, data).then(res => res.data);
+
+export const deleteComment = (slug: string, id: number) =>
+  api.delete(`/articles/${slug}/comments/${id}`).then(res => res.data);

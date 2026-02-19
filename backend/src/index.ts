@@ -15,6 +15,7 @@ import articleRoutes from './routes/articleRoutes';
 import searchRoutes from './routes/searchRoutes';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
+import commentRoutes from './routes/commentRoutes';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -28,14 +29,16 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '1mb' }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use('/api', limiter);
+// Rate limiting (skip in development/test)
+if (process.env.NODE_ENV === 'production') {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+  app.use('/api', limiter);
+}
 
 // Health check
 app.get('/api/health', async (_req, res) => {
@@ -54,6 +57,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/articles/:slug/comments', commentRoutes);
 
 // Start server
 const start = async () => {

@@ -8,6 +8,7 @@ import { useToast } from '../components/ui/Toast';
 import ConfirmModal from '../components/ui/ConfirmModal';
 import { useAuth } from '../contexts/AuthContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import CommentSection from '../components/CommentSection';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -143,6 +144,8 @@ export default function ArticlePage() {
           </>
         )}
       </div>
+
+      <CommentSection slug={article.slug} />
 
       {showDeleteConfirm && (
         <ConfirmModal

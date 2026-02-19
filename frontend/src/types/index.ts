@@ -54,3 +54,15 @@ export interface AuthResponse {
   token: string;
   user: User;
 }
+
+export interface Comment {
+  id: number;
+  content: string;
+  articleId: number;
+  authorId: number;
+  author: { id: number; username: string };
+  parentId: number | null;
+  replies: Comment[];
+  createdAt: string;
+  updatedAt: string;
+}
