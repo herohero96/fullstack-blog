@@ -7,7 +7,15 @@
       "Bash(npx prisma migrate reset:*)",
       "Bash(npx prisma db push:*)",
       "Bash(npx prisma generate:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(python:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsInN0YXR1cyI6ImFwcHJvdmVkIiwiaWF0IjoxNzcxNDg1NjI3LCJleHAiOjE3NzIwOTA0Mjd9.bbdSUWJv_du8XJKHR2D_RzgahGypM_OfOoBGQpzPuLw\")",
+      "Bash(SLUG=\"用-hyper-终端远程连接-claude-code-手机也能写代码-mlrt9cg0\")",
+      "Bash(SLUG=\"ssh-claude-code-mlrkxird\")",
+      "Bash(test:*)",
+      "Bash(git commit:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.google.com)"
     ]
   }
 }

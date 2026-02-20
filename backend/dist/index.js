@@ -18,6 +18,7 @@ const articleRoutes_1 = __importDefault(require("./routes/articleRoutes"));
 const searchRoutes_1 = __importDefault(require("./routes/searchRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const commentRoutes_1 = __importDefault(require("./routes/commentRoutes"));
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
 const PORT = process.env.PORT || 5000;
@@ -53,6 +54,7 @@ app.use('/api/categories', categoryRoutes_1.default);
 app.use('/api/tags', tagRoutes_1.default);
 app.use('/api/articles', articleRoutes_1.default);
 app.use('/api/search', searchRoutes_1.default);
+app.use('/api/articles/:slug/comments', commentRoutes_1.default);
 // Start server
 const start = async () => {
     await db_1.default.$connect();
