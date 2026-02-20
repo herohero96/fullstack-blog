@@ -4,7 +4,7 @@ import prisma from '../config/db';
 // 点赞 / 取消点赞
 export const toggleLike = async (req: Request, res: Response) => {
   try {
-    const articleId = parseInt(req.params.id);
+    const articleId = parseInt(req.params.id as string);
     const userId = (req as any).user.userId;
 
     const existing = await prisma.like.findUnique({
@@ -28,8 +28,8 @@ export const toggleLike = async (req: Request, res: Response) => {
 // 获取点赞状态
 export const getLikeStatus = async (req: Request, res: Response) => {
   try {
-    const articleId = parseInt(req.params.id);
-    const userId = (req as any).user?.id;
+    const articleId = parseInt(req.params.id as string);
+    const userId = (req as any).user?.userId;
 
     const count = await prisma.like.count({ where: { articleId } });
     const liked = userId
