@@ -16,6 +16,7 @@ import searchRoutes from './routes/searchRoutes';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import commentRoutes from './routes/commentRoutes';
+import likeRoutes from './routes/likeRoutes';
 
 const app = express();
 app.set('trust proxy', 1);
@@ -58,6 +59,7 @@ app.use('/api/tags', tagRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/articles/:slug/comments', commentRoutes);
+app.use('/api', likeRoutes);
 
 // Start server
 const start = async () => {
