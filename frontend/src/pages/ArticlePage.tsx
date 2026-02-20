@@ -9,6 +9,7 @@ import ConfirmModal from '../components/ui/ConfirmModal';
 import { useAuth } from '../contexts/AuthContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import CommentSection from '../components/CommentSection';
+import LikeButton from '../components/ui/LikeButton';
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
@@ -145,6 +146,9 @@ export default function ArticlePage() {
         )}
       </div>
 
+      <div className="flex justify-center my-6">
+        <LikeButton articleId={article.id} />
+      </div>
       <CommentSection slug={article.slug} />
 
       {showDeleteConfirm && (

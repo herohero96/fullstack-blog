@@ -48,6 +48,18 @@ export const requireApproved = (req: Request, res: Response, next: NextFunction)
   next();
 };
 
+export const optionalAuth = (req: Request, res: Response, next: NextFunction) => {
+  const header = req.headers.authorization;
+  if (header && header.startsWith('Bearer ')) {
+    try {
+      req.user = verifyToken(header.slice(7));
+    } catch {
+      // 忽略无效 token，继续匿名访问
+    }
+  }
+  next();
+};
+
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (req.user?.role !== 'admin') {
     res.status(403).json({ message: 'Forbidden: admin access required' });
