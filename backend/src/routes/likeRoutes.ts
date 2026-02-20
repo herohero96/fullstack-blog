@@ -4,7 +4,7 @@ import { requireAuth, optionalAuth } from '../middleware/auth';
 
 const router = Router();
 
-router.get('/articles/:id/like', optionalAuth, getLikeStatus);
-router.post('/articles/:id/like', requireAuth, toggleLike);
+router.get('/articles/:slug/like', optionalAuth, getLikeStatus);
+router.post('/articles/:slug/like', requireAuth, toggleLike);
 
 export default router;

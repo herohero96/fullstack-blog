@@ -1,36 +1,41 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from './Toast';
 import api from '../../lib/api';
 
 interface LikeButtonProps {
-  articleId: number;
+  slug: string;
 }
 
-export default function LikeButton({ articleId }: LikeButtonProps) {
+export default function LikeButton({ slug }: LikeButtonProps) {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [liked, setLiked] = useState(false);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    api.get(`/articles/${articleId}/like`)
+    api.get(`/articles/${slug}/like`)
       .then((res) => {
         setLiked(res.data.liked);
         setCount(res.data.count);
       })
       .catch(() => {});
-  }, [articleId]);
+  }, [slug]);
 
   const handleToggle = async () => {
-    if (!user) return alert('请先登录后再点赞');
+    if (!user) {
+      showToast('请先登录后再点赞', 'error');
+      return;
+    }
     if (loading) return;
     setLoading(true);
     try {
-      const res = await api.post(`/articles/${articleId}/like`);
+      const res = await api.post(`/articles/${slug}/like`);
       setLiked(res.data.liked);
       setCount(res.data.count);
     } catch {
-      alert('操作失败，请稍后再试');
+      showToast('操作失败，请稍后再试', 'error');
     } finally {
       setLoading(false);
     }

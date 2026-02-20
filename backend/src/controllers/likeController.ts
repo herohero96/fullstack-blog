@@ -4,20 +4,23 @@ import prisma from '../config/db';
 // 点赞 / 取消点赞
 export const toggleLike = async (req: Request, res: Response) => {
   try {
-    const articleId = parseInt(req.params.id as string);
+    const slug = req.params.slug;
     const userId = (req as any).user.userId;
 
+    const article = await prisma.article.findUnique({ where: { slug } });
+    if (!article) return res.status(404).json({ message: 'Article not found' });
+
     const existing = await prisma.like.findUnique({
-      where: { articleId_userId: { articleId, userId } },
+      where: { articleId_userId: { articleId: article.id, userId } },
     });
 
     if (existing) {
       await prisma.like.delete({ where: { id: existing.id } });
-      const count = await prisma.like.count({ where: { articleId } });
+      const count = await prisma.like.count({ where: { articleId: article.id } });
       return res.json({ liked: false, count });
     } else {
-      await prisma.like.create({ data: { articleId, userId } });
-      const count = await prisma.like.count({ where: { articleId } });
+      await prisma.like.create({ data: { articleId: article.id, userId } });
+      const count = await prisma.like.count({ where: { articleId: article.id } });
       return res.json({ liked: true, count });
     }
   } catch (error) {
@@ -28,13 +31,16 @@ export const toggleLike = async (req: Request, res: Response) => {
 // 获取点赞状态
 export const getLikeStatus = async (req: Request, res: Response) => {
   try {
-    const articleId = parseInt(req.params.id as string);
+    const slug = req.params.slug;
     const userId = (req as any).user?.userId;
 
-    const count = await prisma.like.count({ where: { articleId } });
+    const article = await prisma.article.findUnique({ where: { slug } });
+    if (!article) return res.status(404).json({ message: 'Article not found' });
+
+    const count = await prisma.like.count({ where: { articleId: article.id } });
     const liked = userId
       ? !!(await prisma.like.findUnique({
-          where: { articleId_userId: { articleId, userId } },
+          where: { articleId_userId: { articleId: article.id, userId } },
         }))
       : false;
 

@@ -147,7 +147,7 @@ export default function ArticlePage() {
       </div>
 
       <div className="flex justify-center my-6">
-        <LikeButton articleId={article.id} />
+        <LikeButton slug={article.slug} />
       </div>
       <CommentSection slug={article.slug} />
 
